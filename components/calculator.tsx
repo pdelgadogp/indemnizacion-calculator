@@ -116,7 +116,7 @@ export default function Calculator() {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full min-w-0 text-[15px] font-medium text-zinc-900 bg-transparent outline-none border border-zinc-200 rounded-md px-2 py-0.5 focus:border-zinc-300"
+              className="w-full min-w-0 text-sm font-medium text-zinc-900 bg-transparent outline-none border border-zinc-200 rounded-md px-1.5 py-0.5 focus:border-zinc-300 truncate"
             />
           </label>
 
@@ -128,18 +128,18 @@ export default function Calculator() {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full min-w-0 text-[15px] font-medium text-zinc-900 bg-transparent outline-none border border-zinc-200 rounded-md px-2 py-0.5 focus:border-zinc-300"
+              className="w-full min-w-0 text-sm font-medium text-zinc-900 bg-transparent outline-none border border-zinc-200 rounded-md px-1.5 py-0.5 focus:border-zinc-300 truncate"
             />
           </label>
         </div>
 
         {results ? (
           <>
-            <div className="grid grid-cols-3 text-center text-xs bg-white rounded-xl border border-zinc-200 divide-x divide-zinc-100 py-2.5">
-              <span className="text-zinc-500">Salario diario <strong className="text-zinc-900 ml-1">{formatCurrency(results.dailySalary)}</strong></span>
-              <span className="text-zinc-500">Días trabajados <strong className="text-zinc-900 ml-1">{results.daysWorked.toLocaleString("es-ES")}</strong></span>
-              <span className="text-zinc-500">Meses comp. <strong className="text-zinc-900 ml-1">{results.monthsWorked.toLocaleString("es-ES")}</strong></span>
-            </div>
+        <div className="grid grid-cols-3 text-center text-xs bg-white rounded-xl border border-zinc-200 divide-x divide-zinc-100 py-2.5 [&>span]:flex [&>span]:flex-col [&>span]:items-center [&>span]:justify-center [&>span]:gap-0.5">
+          <span className="text-zinc-500">Salario diario <strong className="text-zinc-900">{formatCurrency(results.dailySalary)}</strong></span>
+          <span className="text-zinc-500">Días trabajados <strong className="text-zinc-900">{results.daysWorked.toLocaleString("es-ES")}</strong></span>
+          <span className="text-zinc-500">Meses comp. <strong className="text-zinc-900">{results.monthsWorked.toLocaleString("es-ES")}</strong></span>
+        </div>
 
             <div className="flex flex-col gap-3">
 
