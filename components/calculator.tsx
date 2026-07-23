@@ -73,8 +73,8 @@ export default function Calculator() {
           </p>
         </header>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <label className="bg-white rounded-xl border border-zinc-200 px-2.5 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all overflow-hidden">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+          <label className="bg-white rounded-xl border border-zinc-200 px-2 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all overflow-hidden">
             <span className="block text-[10px] text-zinc-400 uppercase tracking-wider mb-1">
               Salario bruto anual
             </span>
@@ -92,7 +92,7 @@ export default function Calculator() {
             </span>
           </label>
 
-          <label className="bg-white rounded-xl border border-zinc-200 px-2.5 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all overflow-hidden">
+          <label className="bg-white rounded-xl border border-zinc-200 px-2 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all overflow-hidden">
             <span className="block text-[10px] text-zinc-400 uppercase tracking-wider mb-1">
               Vacaciones <span className="lg:hidden">disfr.</span><span className="hidden lg:inline">disfrutadas</span>
             </span>
@@ -110,7 +110,7 @@ export default function Calculator() {
             </span>
           </label>
 
-          <label className="bg-white rounded-xl border border-zinc-200 px-2.5 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all overflow-hidden">
+          <label className="bg-white rounded-xl border border-zinc-200 px-2 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all overflow-hidden">
             <span className="block text-[10px] text-zinc-400 uppercase tracking-wider mb-1">
               Inicio contrato
             </span>
@@ -122,7 +122,7 @@ className="w-full min-w-0 text-xs font-medium text-zinc-900 bg-transparent outli
               />
           </label>
 
-          <label className="bg-white rounded-xl border border-zinc-200 px-2.5 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all overflow-hidden">
+          <label className="bg-white rounded-xl border border-zinc-200 px-2 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all overflow-hidden">
             <span className="block text-[10px] text-zinc-400 uppercase tracking-wider mb-1">
               Fin contrato
             </span>
