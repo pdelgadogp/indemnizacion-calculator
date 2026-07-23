@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
-import { calculate, formatCurrency } from "@/lib/calculations";
+import { calculate, formatCurrency, formatInt } from "@/lib/calculations";
 
 function formatDate(d: Date) {
   return d.toISOString().split("T")[0];
@@ -18,7 +18,9 @@ function parseSalary(raw: string): number {
 }
 
 function formatSalaryForDisplay(n: number): string {
-  return n.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const intPart = Math.floor(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  const decPart = Math.round((n - Math.floor(n)) * 100).toString().padStart(2, "0");
+  return intPart + "," + decPart;
 }
 
 export default function Calculator() {
@@ -72,7 +74,7 @@ export default function Calculator() {
         </header>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <label className="bg-white rounded-xl border border-zinc-200 px-3 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all">
+          <label className="bg-white rounded-xl border border-zinc-200 px-3 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all overflow-hidden">
             <span className="block text-[10px] text-zinc-400 uppercase tracking-wider mb-1">
               Salario bruto anual
             </span>
@@ -90,7 +92,7 @@ export default function Calculator() {
             </span>
           </label>
 
-          <label className="bg-white rounded-xl border border-zinc-200 px-3 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all">
+          <label className="bg-white rounded-xl border border-zinc-200 px-3 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all overflow-hidden">
             <span className="block text-[10px] text-zinc-400 uppercase tracking-wider mb-1">
               Vacaciones <span className="lg:hidden">disfr.</span><span className="hidden lg:inline">disfrutadas</span>
             </span>
@@ -108,7 +110,7 @@ export default function Calculator() {
             </span>
           </label>
 
-          <label className="bg-white rounded-xl border border-zinc-200 px-3 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all">
+          <label className="bg-white rounded-xl border border-zinc-200 px-3 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all overflow-hidden">
             <span className="block text-[10px] text-zinc-400 uppercase tracking-wider mb-1">
               Inicio contrato
             </span>
@@ -120,7 +122,7 @@ className="w-full min-w-0 text-sm font-medium text-zinc-900 bg-transparent outli
               />
           </label>
 
-          <label className="bg-white rounded-xl border border-zinc-200 px-3 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all">
+          <label className="bg-white rounded-xl border border-zinc-200 px-3 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all overflow-hidden">
             <span className="block text-[10px] text-zinc-400 uppercase tracking-wider mb-1">
               Fin contrato
             </span>
@@ -137,8 +139,8 @@ className="w-full min-w-0 text-sm font-medium text-zinc-900 bg-transparent outli
           <>
         <div className="grid grid-cols-3 text-center text-xs bg-white rounded-xl border border-zinc-200 divide-x divide-zinc-100 py-2.5 [&>span]:flex [&>span]:flex-col [&>span]:items-center [&>span]:justify-center [&>span]:gap-0.5">
           <span className="text-zinc-500">Salario diario <strong className="text-zinc-900">{formatCurrency(results.dailySalary)}</strong></span>
-          <span className="text-zinc-500">Días trabajados <strong className="text-zinc-900">{results.daysWorked.toLocaleString("es-ES")}</strong></span>
-              <span className="text-zinc-500"><span className="lg:hidden">Meses comp.</span><span className="hidden lg:inline">Meses computables</span> <strong className="text-zinc-900">{results.monthsWorked.toLocaleString("es-ES")}</strong></span>
+          <span className="text-zinc-500">Días trabajados <strong className="text-zinc-900">{formatInt(results.daysWorked)}</strong></span>
+              <span className="text-zinc-500"><span className="lg:hidden">Meses comp.</span><span className="hidden lg:inline">Meses computables</span> <strong className="text-zinc-900">{formatInt(results.monthsWorked)}</strong></span>
         </div>
 
             <div className="flex flex-col gap-3">

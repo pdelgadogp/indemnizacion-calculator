@@ -111,7 +111,15 @@ export function calculate(
 
 export function formatCurrency(n: number): string {
   if (isNaN(n)) n = 0;
-  return new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+  const sign = n < 0 ? "-" : "";
+  n = Math.abs(n);
+  const intPart = Math.floor(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  const decPart = Math.round((n - Math.floor(n)) * 100).toString().padStart(2, "0");
+  return sign + intPart + "," + decPart + " €";
+}
+
+export function formatInt(n: number): string {
+  return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 export function formatNumber(n: number): string {
