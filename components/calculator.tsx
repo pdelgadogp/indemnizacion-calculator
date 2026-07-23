@@ -116,7 +116,7 @@ export default function Calculator() {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-className="w-full min-w-0 text-sm font-medium text-zinc-900 bg-transparent outline-none truncate"
+className="w-full min-w-0 text-sm font-medium text-zinc-900 bg-transparent outline-none truncate border border-zinc-200 rounded-md px-1.5 py-0.5"
               />
           </label>
 
@@ -128,7 +128,7 @@ className="w-full min-w-0 text-sm font-medium text-zinc-900 bg-transparent outli
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-className="w-full min-w-0 text-sm font-medium text-zinc-900 bg-transparent outline-none truncate"
+className="w-full min-w-0 text-sm font-medium text-zinc-900 bg-transparent outline-none truncate border border-zinc-200 rounded-md px-1.5 py-0.5"
               />
           </label>
         </div>
