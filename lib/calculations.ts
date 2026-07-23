@@ -110,6 +110,7 @@ export function calculate(
 }
 
 export function formatCurrency(n: number): string {
+  if (isNaN(n)) n = 0;
   return new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
 }
 
