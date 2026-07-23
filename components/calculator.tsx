@@ -138,7 +138,7 @@ export default function Calculator() {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-className="w-full min-w-0 text-xs font-medium text-zinc-900 bg-transparent outline-none truncate ring-1 ring-inset ring-zinc-200 rounded px-1 py-0.5 lg:ring-0 lg:border lg:border-zinc-200 lg:rounded-md lg:px-2"
+className="w-full min-w-0 text-xs lg:text-[15px] font-medium text-zinc-900 bg-transparent outline-none truncate ring-1 ring-inset ring-zinc-200 rounded px-1 py-0.5 lg:ring-0 lg:border lg:border-zinc-200 lg:rounded-md lg:px-2 lg:py-0.5 lg:focus:border-zinc-300"
               />
           </label>
 
@@ -150,7 +150,7 @@ className="w-full min-w-0 text-xs font-medium text-zinc-900 bg-transparent outli
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-className="w-full min-w-0 text-xs font-medium text-zinc-900 bg-transparent outline-none truncate ring-1 ring-inset ring-zinc-200 rounded px-1 py-0.5 lg:ring-0 lg:border lg:border-zinc-200 lg:rounded-md lg:px-2"
+className="w-full min-w-0 text-xs lg:text-[15px] font-medium text-zinc-900 bg-transparent outline-none truncate ring-1 ring-inset ring-zinc-200 rounded px-1 py-0.5 lg:ring-0 lg:border lg:border-zinc-200 lg:rounded-md lg:px-2 lg:py-0.5 lg:focus:border-zinc-300"
               />
           </label>
         </div>
