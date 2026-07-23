@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { calculate, formatCurrency, formatInt } from "@/lib/calculations";
 
 function formatDate(d: Date) {
@@ -24,12 +24,32 @@ function formatSalaryForDisplay(n: number): string {
 }
 
 export default function Calculator() {
-  const [annualSalary, setAnnualSalary] = useState(0);
+  const [annualSalary, setAnnualSalary] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("salario");
+      if (saved) return parseFloat(saved) || 0;
+    }
+    return 0;
+  });
   const [salaryInput, setSalaryInput] = useState("");
   const [salaryFocused, setSalaryFocused] = useState(false);
   const [startDate, setStartDate] = useState("2025-06-02");
   const [endDate, setEndDate] = useState(defaultEnd());
-  const [vacationTaken, setVacationTaken] = useState(0);
+  const [vacationTaken, setVacationTaken] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("vacaciones");
+      if (saved) return parseInt(saved, 10) || 0;
+    }
+    return 0;
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") localStorage.setItem("salario", annualSalary.toString());
+  }, [annualSalary]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") localStorage.setItem("vacaciones", vacationTaken.toString());
+  }, [vacationTaken]);
 
   const salaryDisplay = salaryFocused
     ? salaryInput
