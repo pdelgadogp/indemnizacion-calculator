@@ -106,7 +106,7 @@ export default function Calculator() {
                 onChange={handleSalaryChange}
                 onFocus={handleSalaryFocus}
                 onBlur={handleSalaryBlur}
-                className="w-full text-[15px] font-medium text-zinc-900 bg-transparent outline-none tabular-nums border border-zinc-200 rounded-md px-2 py-1 focus:border-zinc-300"
+                className="w-full text-[15px] font-medium text-zinc-900 bg-transparent outline-none tabular-nums border border-zinc-200 rounded-md px-2 py-1 focus:border-zinc-300 h-9 box-border"
               />
               <span className="text-sm text-zinc-400 shrink-0">€</span>
             </span>
@@ -122,7 +122,7 @@ export default function Calculator() {
                 min={0}
                 value={vacationTaken}
                 onChange={handleVacationChange}
-                className="w-12 text-[15px] font-medium text-zinc-900 bg-transparent outline-none tabular-nums border border-zinc-200 rounded-md px-1.5 py-1 focus:border-zinc-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="w-12 text-[15px] font-medium text-zinc-900 bg-transparent outline-none tabular-nums border border-zinc-200 rounded-md px-1.5 py-1 focus:border-zinc-300 h-9 box-border [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
               <span className="text-xs text-zinc-400 whitespace-nowrap">
                 / {results?.vacationEarned?.toFixed(1)?.replace(".", ",") ?? "0,0"} gener.
@@ -138,7 +138,7 @@ export default function Calculator() {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-className="w-full min-w-0 text-xs lg:text-[15px] font-medium text-zinc-900 bg-transparent outline-none truncate ring-1 ring-inset ring-zinc-200 rounded px-1 py-0.5 lg:ring-0 lg:border lg:border-zinc-200 lg:rounded-md lg:px-2 lg:py-1 lg:focus:border-zinc-300"
+className="w-full min-w-0 text-xs lg:text-[15px] font-medium text-zinc-900 bg-transparent outline-none truncate ring-1 ring-inset ring-zinc-200 rounded px-1 py-0.5 lg:ring-0 lg:border lg:border-zinc-200 lg:rounded-md lg:px-2 lg:py-1 lg:h-9 lg:box-border lg:focus:border-zinc-300"
               />
           </label>
 
@@ -150,7 +150,7 @@ className="w-full min-w-0 text-xs lg:text-[15px] font-medium text-zinc-900 bg-tr
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-className="w-full min-w-0 text-xs lg:text-[15px] font-medium text-zinc-900 bg-transparent outline-none truncate ring-1 ring-inset ring-zinc-200 rounded px-1 py-0.5 lg:ring-0 lg:border lg:border-zinc-200 lg:rounded-md lg:px-2 lg:py-1 lg:focus:border-zinc-300"
+className="w-full min-w-0 text-xs lg:text-[15px] font-medium text-zinc-900 bg-transparent outline-none truncate ring-1 ring-inset ring-zinc-200 rounded px-1 py-0.5 lg:ring-0 lg:border lg:border-zinc-200 lg:rounded-md lg:px-2 lg:py-1 lg:h-9 lg:box-border lg:focus:border-zinc-300"
               />
           </label>
         </div>
