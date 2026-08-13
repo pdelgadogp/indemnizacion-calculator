@@ -5,7 +5,6 @@ export interface Results {
   vacationEarned: number;
   vacationUnused: number;
   effectiveIRPFRate: number;
-  marginalIRPFRate: number;
   despidoImprocedente: number;
   extincionVoluntadTrabajador: number;
   extincionCausasObjetivas: number;
@@ -21,10 +20,6 @@ export interface Results {
   finiquitoNeto: number;
   improcedenteFiniquito: number;
   procedenteFiniquito: number;
-  baseIRPFIndemnizacion: number;
-  irpfIndemnizacion: number;
-  improcedenteNetoIRPF: number;
-  improcedenteFiniquitoIRPF: number;
 }
 
 function dateDiffDays(a: Date, b: Date): number {
@@ -61,22 +56,6 @@ function calcEffectiveIRPFRate(annualSalary: number): number {
   return Math.round((totalTax / annualSalary) * 10000) / 10000;
 }
 
-function calcMarginalIRPFRate(annualSalary: number): number {
-  const brackets = [
-    { limit: 12450, rate: 0.18 },
-    { limit: 20200, rate: 0.2285 },
-    { limit: 35200, rate: 0.2835 },
-    { limit: 60000, rate: 0.3575 },
-    { limit: 300000, rate: 0.4375 },
-    { limit: Infinity, rate: 0.50 },
-  ];
-
-  for (const b of brackets) {
-    if (annualSalary <= b.limit) return b.rate;
-  }
-  return 0.5;
-}
-
 function calcPagasExtraProporcional(endDate: Date, pagaMonto: number): number {
   const y = endDate.getFullYear();
   const jan1 = new Date(y, 0, 1);
@@ -102,8 +81,7 @@ export function calculate(
   startDate: Date,
   endDate: Date,
   vacationTaken: number,
-  numPagas: number = 14,
-  indemnizacionPercibida: number = 0
+  numPagas: number = 14
 ): Results | null {
   if (annualSalary < 0 || !startDate || !endDate) return null;
   if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return null;
@@ -130,13 +108,8 @@ export function calculate(
   const finiquitoBruto = vacacionesBruto + pagasExtra;
 
   const effectiveIRPFRate = calcEffectiveIRPFRate(annualSalary);
-  const marginalIRPFRate = calcMarginalIRPFRate(annualSalary);
   const finiquitoIRPF = finiquitoBruto * effectiveIRPFRate;
   const finiquitoNeto = finiquitoBruto - finiquitoIRPF;
-
-  const baseIRPFIndemnizacion = indemnizacionPercibida;
-  const irpfIndemnizacion = baseIRPFIndemnizacion * marginalIRPFRate;
-  const improcedenteNetoIRPF = indemnizacionPercibida - irpfIndemnizacion;
 
   const r = (n: number) => Math.round(n * 100) / 100;
 
@@ -147,7 +120,6 @@ export function calculate(
     vacationEarned: r(vacationEarned),
     vacationUnused: r(vacationUnused),
     effectiveIRPFRate,
-    marginalIRPFRate,
     despidoImprocedente: r(despidoImprocedente),
     extincionVoluntadTrabajador: r(extincionVoluntadTrabajador),
     extincionCausasObjetivas: r(fProcedente),
@@ -163,10 +135,6 @@ export function calculate(
     finiquitoNeto: r(finiquitoNeto),
     improcedenteFiniquito: r(despidoImprocedente + finiquitoNeto),
     procedenteFiniquito: r(fProcedente + finiquitoNeto),
-    baseIRPFIndemnizacion: r(baseIRPFIndemnizacion),
-    irpfIndemnizacion: r(irpfIndemnizacion),
-    improcedenteNetoIRPF: r(improcedenteNetoIRPF),
-    improcedenteFiniquitoIRPF: r(improcedenteNetoIRPF + finiquitoNeto),
   };
 }
 

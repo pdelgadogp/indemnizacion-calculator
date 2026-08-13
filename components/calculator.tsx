@@ -43,10 +43,6 @@ export default function Calculator() {
     return 0;
   });
   const [numPagas, setNumPagas] = useState(14);
-  const [sinConciliacion, setSinConciliacion] = useState(false);
-  const [indemnizacionInput, setIndemnizacionInput] = useState("");
-  const [indemnizacionPercibida, setIndemnizacionPercibida] = useState(0);
-  const [indemnizacionFocused, setIndemnizacionFocused] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") localStorage.setItem("salario", annualSalary.toString());
@@ -60,20 +56,15 @@ export default function Calculator() {
     ? salaryInput
     : formatSalaryForDisplay(annualSalary);
 
-  const indemnizacionDisplay = indemnizacionFocused
-    ? indemnizacionInput
-    : formatSalaryForDisplay(indemnizacionPercibida);
-
   const results = useMemo(
     () => calculate(
       annualSalary,
       new Date(startDate + "T00:00:00"),
       new Date(endDate + "T23:59:59"),
       vacationTaken,
-      numPagas,
-      indemnizacionPercibida
+      numPagas
     ),
-    [annualSalary, startDate, endDate, vacationTaken, numPagas, indemnizacionPercibida]
+    [annualSalary, startDate, endDate, vacationTaken, numPagas]
   );
 
   const handleSalaryFocus = useCallback(() => {
@@ -94,20 +85,6 @@ export default function Calculator() {
   const handleVacationChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const v = Number(e.target.value);
     if (!isNaN(v)) setVacationTaken(Math.max(0, v));
-  }, []);
-
-  const handleIndemnizacionFocus = useCallback(() => {
-    setIndemnizacionFocused(true);
-    setIndemnizacionInput(indemnizacionPercibida === 0 ? "" : indemnizacionPercibida.toString().replace(".", ","));
-  }, [indemnizacionPercibida]);
-
-  const handleIndemnizacionBlur = useCallback(() => {
-    setIndemnizacionFocused(false);
-    setIndemnizacionPercibida(parseSalary(indemnizacionInput));
-  }, [indemnizacionInput]);
-
-  const handleIndemnizacionChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setIndemnizacionInput(e.target.value);
   }, []);
 
   return (
@@ -220,48 +197,14 @@ className="w-full min-w-0 text-xs lg:text-[15px] font-medium text-zinc-900 bg-tr
                 <span className="text-[13px] font-medium text-zinc-800">Despido improcedente / extinción por incumplimiento del empresario</span>
               </div>
               <span className="text-[14px] font-semibold text-zinc-700 tabular-nums ml-4 shrink-0">
-                {sinConciliacion ? formatCurrency(results.improcedenteNetoIRPF) : formatCurrency(results.despidoImprocedente)}
+                {formatCurrency(results.despidoImprocedente)}
               </span>
             </div>
             <div className="px-4 py-2 border-t border-zinc-50 space-y-2">
-              <label className="flex items-center gap-2 cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  checked={sinConciliacion}
-                  onChange={(e) => setSinConciliacion(e.target.checked)}
-                  className="h-3.5 w-3.5 accent-zinc-600"
-                />
-                <span className="text-[12px] text-zinc-600">Sin acto de conciliación</span>
-              </label>
-              {sinConciliacion && (
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[12px] text-zinc-500">Indemnización percibida</span>
-                    <input
-                      type="text"
-                      inputMode="decimal"
-                      value={indemnizacionDisplay}
-                      onFocus={handleIndemnizacionFocus}
-                      onBlur={handleIndemnizacionBlur}
-                      onChange={handleIndemnizacionChange}
-                      className="w-32 text-[13px] font-medium text-zinc-900 bg-transparent outline-none tabular-nums border border-zinc-200 rounded-md px-2 py-0.5 focus:border-zinc-300 text-right"
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[12px] text-zinc-400">
-                      IRPF (tramo marginal {(results.marginalIRPFRate * 100).toFixed(1).replace(".", ",")}%)
-                    </span>
-                    <span className="text-[12px] text-zinc-400 tabular-nums">−{formatCurrency(results.irpfIndemnizacion)}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[12px] text-zinc-500">Indemnización neta</span>
-                    <span className="text-[12px] font-medium text-zinc-700 tabular-nums">{formatCurrency(results.improcedenteNetoIRPF)}</span>
-                  </div>
-                </div>
-              )}
-              <div className="pt-1 border-t border-zinc-50">
-                <p className="text-[10px] text-zinc-400">Salario diario × meses × 2,75</p>
-              </div>
+              <p className="text-[11px] leading-relaxed text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                ⚠️ Sin acto de conciliación, la indemnización puede tributar a IRPF. Se asume que se acude a conciliación.
+              </p>
+              <p className="text-[10px] text-zinc-400">Salario diario × meses × 2,75</p>
             </div>
           </div>
 
@@ -312,7 +255,7 @@ className="w-full min-w-0 text-xs lg:text-[15px] font-medium text-zinc-900 bg-tr
               <div className="flex items-center justify-between pt-2 border-t border-zinc-100">
                 <span className="text-[12px] text-zinc-500">Improcedente + finiquito</span>
                 <span className="text-[14px] font-semibold text-zinc-700 tabular-nums">
-                  {formatCurrency(sinConciliacion ? results.improcedenteFiniquitoIRPF : results.improcedenteFiniquito)}
+                  {formatCurrency(results.improcedenteFiniquito)}
                 </span>
               </div>
               <div className="flex items-center justify-between">
