@@ -42,6 +42,11 @@ export default function Calculator() {
     }
     return 0;
   });
+  const [numPagas, setNumPagas] = useState(14);
+  const [sinConciliacion, setSinConciliacion] = useState(false);
+  const [indemnizacionInput, setIndemnizacionInput] = useState("");
+  const [indemnizacionPercibida, setIndemnizacionPercibida] = useState(0);
+  const [indemnizacionFocused, setIndemnizacionFocused] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") localStorage.setItem("salario", annualSalary.toString());
@@ -55,9 +60,20 @@ export default function Calculator() {
     ? salaryInput
     : formatSalaryForDisplay(annualSalary);
 
+  const indemnizacionDisplay = indemnizacionFocused
+    ? indemnizacionInput
+    : formatSalaryForDisplay(indemnizacionPercibida);
+
   const results = useMemo(
-    () => calculate(annualSalary, new Date(startDate + "T00:00:00"), new Date(endDate + "T23:59:59"), vacationTaken),
-    [annualSalary, startDate, endDate, vacationTaken]
+    () => calculate(
+      annualSalary,
+      new Date(startDate + "T00:00:00"),
+      new Date(endDate + "T23:59:59"),
+      vacationTaken,
+      numPagas,
+      indemnizacionPercibida
+    ),
+    [annualSalary, startDate, endDate, vacationTaken, numPagas, indemnizacionPercibida]
   );
 
   const handleSalaryFocus = useCallback(() => {
@@ -80,6 +96,20 @@ export default function Calculator() {
     if (!isNaN(v)) setVacationTaken(Math.max(0, v));
   }, []);
 
+  const handleIndemnizacionFocus = useCallback(() => {
+    setIndemnizacionFocused(true);
+    setIndemnizacionInput(indemnizacionPercibida === 0 ? "" : indemnizacionPercibida.toString().replace(".", ","));
+  }, [indemnizacionPercibida]);
+
+  const handleIndemnizacionBlur = useCallback(() => {
+    setIndemnizacionFocused(false);
+    setIndemnizacionPercibida(parseSalary(indemnizacionInput));
+  }, [indemnizacionInput]);
+
+  const handleIndemnizacionChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setIndemnizacionInput(e.target.value);
+  }, []);
+
   return (
     <main className="h-screen overflow-y-auto bg-zinc-50 p-6 font-[family-name:var(--font-geist-sans),system-ui,sans-serif] select-none">
       <div className="max-w-2xl lg:max-w-3xl mx-auto flex flex-col gap-5 pb-10">
@@ -93,7 +123,7 @@ export default function Calculator() {
           </p>
         </header>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-2">
           <label className="bg-white rounded-xl border border-zinc-200 px-2 lg:px-3 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all overflow-hidden lg:overflow-visible">
             <span className="block text-[10px] text-zinc-400 uppercase tracking-wider mb-1">
               Salario bruto anual
@@ -127,6 +157,22 @@ export default function Calculator() {
               <span className="text-xs text-zinc-400 whitespace-nowrap">
                 / {results?.vacationEarned?.toFixed(1)?.replace(".", ",") ?? "0,0"} gener.
               </span>
+            </span>
+          </label>
+
+          <label className="bg-white rounded-xl border border-zinc-200 px-2 lg:px-3 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all overflow-hidden lg:overflow-visible">
+            <span className="block text-[10px] text-zinc-400 uppercase tracking-wider mb-1">
+              Nº de pagas
+            </span>
+            <span className="flex items-baseline gap-1">
+              <select
+                value={numPagas}
+                onChange={(e) => setNumPagas(Number(e.target.value))}
+                className="w-full text-[15px] font-medium text-zinc-900 bg-transparent outline-none border border-zinc-200 rounded-md px-2 py-1 focus:border-zinc-300 h-9 box-border"
+              >
+                <option value={12}>12</option>
+                <option value={14}>14</option>
+              </select>
             </span>
           </label>
 
@@ -171,12 +217,55 @@ className="w-full min-w-0 text-xs lg:text-[15px] font-medium text-zinc-900 bg-tr
             </div>
             <div className="px-4 py-2 flex items-center justify-between">
               <div>
-                <span className="text-[13px] font-medium text-zinc-800">Despido improcedente / voluntad del trabajador</span>
+                <span className="text-[13px] font-medium text-zinc-800">Despido improcedente / extinción por incumplimiento del empresario</span>
               </div>
-              <span className="text-[14px] font-semibold text-zinc-700 tabular-nums ml-4 shrink-0">{formatCurrency(results.despidoImprocedente)}</span>
+              <span className="text-[14px] font-semibold text-zinc-700 tabular-nums ml-4 shrink-0">
+                {sinConciliacion ? formatCurrency(results.improcedenteNetoIRPF) : formatCurrency(results.despidoImprocedente)}
+              </span>
             </div>
-            <div className="px-4 py-1.5 border-t border-zinc-50 bg-zinc-50/30">
-              <p className="text-[10px] text-zinc-400">Salario diario × meses × 2,75</p>
+            <div className="px-4 py-2 border-t border-zinc-50 space-y-2">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={sinConciliacion}
+                  onChange={(e) => setSinConciliacion(e.target.checked)}
+                  className="h-3.5 w-3.5 accent-zinc-600"
+                />
+                <span className="text-[12px] text-zinc-600">Sin acto de conciliación</span>
+              </label>
+              {sinConciliacion && (
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[12px] text-zinc-500">Indemnización percibida</span>
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={indemnizacionDisplay}
+                      onFocus={handleIndemnizacionFocus}
+                      onBlur={handleIndemnizacionBlur}
+                      onChange={handleIndemnizacionChange}
+                      className="w-32 text-[13px] font-medium text-zinc-900 bg-transparent outline-none tabular-nums border border-zinc-200 rounded-md px-2 py-0.5 focus:border-zinc-300 text-right"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[12px] text-zinc-400">Exento (mínimo legal)</span>
+                    <span className="text-[12px] text-zinc-700 tabular-nums">−{formatCurrency(results.despidoImprocedente)}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[12px] text-zinc-400">Exceso sujeto a IRPF</span>
+                    <span className="text-[12px] text-zinc-700 tabular-nums">{formatCurrency(results.excesoIndemnizacionIRPF)}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[12px] text-zinc-400">
+                      IRPF exceso (tramo marginal {(results.marginalIRPFRate * 100).toFixed(1).replace(".", ",")}%)
+                    </span>
+                    <span className="text-[12px] text-zinc-400 tabular-nums">−{formatCurrency(results.irpfIndemnizacion)}</span>
+                  </div>
+                </div>
+              )}
+              <div className="pt-1 border-t border-zinc-50">
+                <p className="text-[10px] text-zinc-400">Salario diario × meses × 2,75</p>
+              </div>
             </div>
           </div>
 
@@ -206,8 +295,14 @@ className="w-full min-w-0 text-xs lg:text-[15px] font-medium text-zinc-900 bg-tr
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-[12px] text-zinc-500">Bruto vacaciones</span>
-                <span className="text-[12px] font-medium text-zinc-700 tabular-nums">{formatCurrency(results.finiquitoBruto)}</span>
+                <span className="text-[12px] font-medium text-zinc-700 tabular-nums">{formatCurrency(results.vacacionesBruto)}</span>
               </div>
+              {numPagas > 12 && (
+                <div className="flex items-center justify-between">
+                  <span className="text-[12px] text-zinc-500">Pagas extra prorrateadas</span>
+                  <span className="text-[12px] font-medium text-zinc-700 tabular-nums">{formatCurrency(results.pagasExtra)}</span>
+                </div>
+              )}
               <div className="flex items-center justify-between">
                 <span className="text-[12px] text-zinc-400">
                   Retención IRPF {(results.effectiveIRPFRate * 100).toFixed(1).replace(".", ",")}% estimado
@@ -220,7 +315,9 @@ className="w-full min-w-0 text-xs lg:text-[15px] font-medium text-zinc-900 bg-tr
               </div>
               <div className="flex items-center justify-between pt-2 border-t border-zinc-100">
                 <span className="text-[12px] text-zinc-500">Improcedente + finiquito</span>
-                <span className="text-[14px] font-semibold text-zinc-700 tabular-nums">{formatCurrency(results.improcedenteFiniquito)}</span>
+                <span className="text-[14px] font-semibold text-zinc-700 tabular-nums">
+                  {formatCurrency(sinConciliacion ? results.improcedenteFiniquitoIRPF : results.improcedenteFiniquito)}
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-[12px] text-zinc-500">Procedente + finiquito</span>
