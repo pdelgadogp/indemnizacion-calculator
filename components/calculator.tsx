@@ -43,6 +43,7 @@ export default function Calculator() {
     return 0;
   });
   const [numPagas, setNumPagas] = useState(14);
+  const [vacacionesAnuales, setVacacionesAnuales] = useState(30);
   const [cobradaVerano, setCobradaVerano] = useState(false);
   const [cobradaNavidad, setCobradaNavidad] = useState(false);
 
@@ -65,10 +66,11 @@ export default function Calculator() {
       new Date(endDate + "T23:59:59"),
       vacationTaken,
       numPagas,
+      vacacionesAnuales,
       cobradaVerano,
       cobradaNavidad
     ),
-    [annualSalary, startDate, endDate, vacationTaken, numPagas, cobradaVerano, cobradaNavidad]
+    [annualSalary, startDate, endDate, vacationTaken, numPagas, vacacionesAnuales, cobradaVerano, cobradaNavidad]
   );
 
   const handleSalaryFocus = useCallback(() => {
@@ -89,6 +91,11 @@ export default function Calculator() {
   const handleVacationChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const v = Number(e.target.value);
     if (!isNaN(v)) setVacationTaken(Math.max(0, v));
+  }, []);
+
+  const handleVacacionesAnualesChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = Number(e.target.value);
+    if (!isNaN(v)) setVacacionesAnuales(Math.max(0, v));
   }, []);
 
   return (
@@ -117,9 +124,9 @@ export default function Calculator() {
                 onChange={handleSalaryChange}
                 onFocus={handleSalaryFocus}
                 onBlur={handleSalaryBlur}
-                className="w-full text-[15px] font-medium text-zinc-900 bg-transparent outline-none tabular-nums border border-zinc-200 rounded-md px-2 py-1 focus:border-zinc-300 h-9 box-border"
+                className="w-full text-[14px] font-medium text-zinc-900 bg-transparent outline-none tabular-nums border border-zinc-200 rounded-md px-2 py-1 focus:border-zinc-300 h-9 box-border"
               />
-              <span className="text-sm text-zinc-400 shrink-0">€</span>
+              <span className="text-[14px] text-zinc-400 shrink-0">€</span>
             </span>
           </label>
 
@@ -133,7 +140,7 @@ export default function Calculator() {
                 min={0}
                 value={vacationTaken}
                 onChange={handleVacationChange}
-                className="w-12 text-[15px] font-medium text-zinc-900 bg-transparent outline-none tabular-nums border border-zinc-200 rounded-md px-1.5 py-1 focus:border-zinc-300 h-9 box-border [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="w-12 text-[14px] font-medium text-zinc-900 bg-transparent outline-none tabular-nums border border-zinc-200 rounded-md px-1.5 py-1 focus:border-zinc-300 h-9 box-border [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
               <span className="text-xs text-zinc-400 whitespace-nowrap">
                 / {results?.vacationEarned?.toFixed(1)?.replace(".", ",") ?? "0,0"} gener.
@@ -168,20 +175,30 @@ className="w-full min-w-0 text-xs lg:text-[15px] font-medium text-zinc-900 bg-tr
 
         {results ? (
           <>
-        <div className="grid grid-cols-2 lg:grid-cols-4 text-center text-xs bg-white rounded-xl border border-zinc-200 divide-x divide-zinc-100 py-2.5 [&>span]:flex [&>span]:flex-col [&>span]:items-center [&>span]:justify-center [&>span]:gap-0.5">
-          <span className="text-zinc-500">Salario diario <strong className="text-zinc-900">{formatCurrency(results.dailySalary)}</strong></span>
-          <span className="text-zinc-500">Días trabajados <strong className="text-zinc-900">{formatInt(results.daysWorked)}</strong></span>
-          <span className="text-zinc-500"><span className="lg:hidden">Meses comp.</span><span className="hidden lg:inline">Meses computables</span> <strong className="text-zinc-900">{formatInt(results.monthsWorked)}</strong></span>
+        <div className="grid grid-cols-2 lg:grid-cols-5 text-center text-xs bg-white rounded-xl border border-zinc-200 divide-x divide-zinc-100 py-2.5 [&>span]:flex [&>span]:flex-col [&>span]:items-center [&>span]:justify-center [&>span]:gap-0.5">
+          <span className="text-zinc-500">Salario diario <strong className="text-zinc-900 text-[14px] font-semibold">{formatCurrency(results.dailySalary)}</strong></span>
+          <span className="text-zinc-500">Días trabajados <strong className="text-zinc-900 text-[14px] font-semibold">{formatInt(results.daysWorked)}</strong></span>
+          <span className="text-zinc-500"><span className="lg:hidden">Meses comp.</span><span className="hidden lg:inline">Meses computables</span> <strong className="text-zinc-900 text-[14px] font-semibold">{formatInt(results.monthsWorked)}</strong></span>
           <span className="text-zinc-500">
             Nº pagas
             <select
               value={numPagas}
               onChange={(e) => setNumPagas(Number(e.target.value))}
-              className="text-xs font-medium text-zinc-900 bg-transparent outline-none border border-zinc-200 rounded-md px-1.5 py-0.5 focus:border-zinc-300"
+              className="text-[14px] font-medium text-zinc-900 bg-transparent outline-none border border-zinc-200 rounded-md px-1.5 py-0.5 focus:border-zinc-300"
             >
               <option value={12}>12</option>
               <option value={14}>14</option>
             </select>
+          </span>
+          <span className="text-zinc-500">
+            Vacaciones/año
+            <input
+              type="number"
+              min={0}
+              value={vacacionesAnuales}
+              onChange={handleVacacionesAnualesChange}
+              className="w-12 text-center text-[14px] font-medium text-zinc-900 bg-transparent outline-none border border-zinc-200 rounded-md px-1 py-0.5 focus:border-zinc-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            />
           </span>
         </div>
 
@@ -233,17 +250,17 @@ className="w-full min-w-0 text-xs lg:text-[15px] font-medium text-zinc-900 bg-tr
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-[12px] text-zinc-500">Bruto vacaciones</span>
-                <span className="text-[12px] font-medium text-zinc-700 tabular-nums">{formatCurrency(results.vacacionesBruto)}</span>
+                <span className="text-[14px] font-semibold text-zinc-700 tabular-nums">{formatCurrency(results.vacacionesBruto)}</span>
               </div>
               {numPagas > 12 && (
                 <>
                   <div className="flex items-center justify-between">
                     <span className="text-[12px] text-zinc-500">Paga verano (ene–jun)</span>
-                    <span className="text-[12px] font-medium text-zinc-700 tabular-nums">{formatCurrency(results.pagaVerano)}</span>
+                    <span className="text-[14px] font-semibold text-zinc-700 tabular-nums">{formatCurrency(results.pagaVerano)}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-[12px] text-zinc-500">Paga navidad (jul–dic)</span>
-                    <span className="text-[12px] font-medium text-zinc-700 tabular-nums">{formatCurrency(results.pagaNavidad)}</span>
+                    <span className="text-[14px] font-semibold text-zinc-700 tabular-nums">{formatCurrency(results.pagaNavidad)}</span>
                   </div>
                   <div className="pt-1.5 flex flex-col gap-1">
                     <label className="flex items-center gap-2 cursor-pointer select-none">
@@ -267,7 +284,7 @@ className="w-full min-w-0 text-xs lg:text-[15px] font-medium text-zinc-900 bg-tr
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-[12px] text-zinc-500">Pagas extra en finiquito</span>
-                    <span className="text-[12px] font-medium text-zinc-700 tabular-nums">{formatCurrency(results.pagasExtra)}</span>
+                    <span className="text-[14px] font-semibold text-zinc-700 tabular-nums">{formatCurrency(results.pagasExtra)}</span>
                   </div>
                 </>
               )}
@@ -275,7 +292,7 @@ className="w-full min-w-0 text-xs lg:text-[15px] font-medium text-zinc-900 bg-tr
                 <span className="text-[12px] text-zinc-400">
                   Retención IRPF {(results.effectiveIRPFRate * 100).toFixed(1).replace(".", ",")}% estimado
                 </span>
-                <span className="text-[12px] text-zinc-400 tabular-nums">−{formatCurrency(results.finiquitoIRPF)}</span>
+                <span className="text-[14px] font-semibold text-zinc-400 tabular-nums">−{formatCurrency(results.finiquitoIRPF)}</span>
               </div>
               <div className="flex items-center justify-between pt-2 border-t border-zinc-100">
                 <span className="text-[13px] font-medium text-zinc-900">Neto estimado</span>

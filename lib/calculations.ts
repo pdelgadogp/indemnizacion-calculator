@@ -87,6 +87,7 @@ export function calculate(
   endDate: Date,
   vacationTaken: number,
   numPagas: number = 14,
+  vacacionesAnuales: number = 30,
   cobradaVerano: boolean = false,
   cobradaNavidad: boolean = false
 ): Results | null {
@@ -106,7 +107,7 @@ export function calculate(
 
   const currentYearDays = dateDiffDays(new Date(endDate.getFullYear(), 0, 1), endDate) + 1;
   const yearTotalDays = daysInYear(endDate);
-  const vacationEarned = (currentYearDays / yearTotalDays) * 30;
+  const vacationEarned = (currentYearDays / yearTotalDays) * vacacionesAnuales;
   const vacationUnused = Math.max(0, vacationEarned - vacationTaken);
   const vacacionesBruto = dailySalary * vacationUnused;
 
