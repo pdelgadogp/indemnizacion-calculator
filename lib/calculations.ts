@@ -21,7 +21,7 @@ export interface Results {
   finiquitoNeto: number;
   improcedenteFiniquito: number;
   procedenteFiniquito: number;
-  excesoIndemnizacionIRPF: number;
+  baseIRPFIndemnizacion: number;
   irpfIndemnizacion: number;
   improcedenteNetoIRPF: number;
   improcedenteFiniquitoIRPF: number;
@@ -134,8 +134,8 @@ export function calculate(
   const finiquitoIRPF = finiquitoBruto * effectiveIRPFRate;
   const finiquitoNeto = finiquitoBruto - finiquitoIRPF;
 
-  const excesoIndemnizacionIRPF = Math.max(0, indemnizacionPercibida - despidoImprocedente);
-  const irpfIndemnizacion = excesoIndemnizacionIRPF * marginalIRPFRate;
+  const baseIRPFIndemnizacion = indemnizacionPercibida;
+  const irpfIndemnizacion = baseIRPFIndemnizacion * marginalIRPFRate;
   const improcedenteNetoIRPF = indemnizacionPercibida - irpfIndemnizacion;
 
   const r = (n: number) => Math.round(n * 100) / 100;
@@ -163,7 +163,7 @@ export function calculate(
     finiquitoNeto: r(finiquitoNeto),
     improcedenteFiniquito: r(despidoImprocedente + finiquitoNeto),
     procedenteFiniquito: r(fProcedente + finiquitoNeto),
-    excesoIndemnizacionIRPF: r(excesoIndemnizacionIRPF),
+    baseIRPFIndemnizacion: r(baseIRPFIndemnizacion),
     irpfIndemnizacion: r(irpfIndemnizacion),
     improcedenteNetoIRPF: r(improcedenteNetoIRPF),
     improcedenteFiniquitoIRPF: r(improcedenteNetoIRPF + finiquitoNeto),

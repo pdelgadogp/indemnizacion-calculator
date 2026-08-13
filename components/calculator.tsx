@@ -112,7 +112,7 @@ export default function Calculator() {
 
   return (
     <main className="h-screen overflow-y-auto bg-zinc-50 p-6 font-[family-name:var(--font-geist-sans),system-ui,sans-serif] select-none">
-      <div className="max-w-2xl lg:max-w-3xl mx-auto flex flex-col gap-5 pb-10">
+      <div className="max-w-2xl lg:max-w-5xl mx-auto flex flex-col gap-5 pb-10">
 
         <header>
           <h1 className="text-lg font-medium text-zinc-900 tracking-tight">
@@ -248,18 +248,14 @@ className="w-full min-w-0 text-xs lg:text-[15px] font-medium text-zinc-900 bg-tr
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[12px] text-zinc-400">Exento (mínimo legal)</span>
-                    <span className="text-[12px] text-zinc-700 tabular-nums">−{formatCurrency(results.despidoImprocedente)}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[12px] text-zinc-400">Exceso sujeto a IRPF</span>
-                    <span className="text-[12px] text-zinc-700 tabular-nums">{formatCurrency(results.excesoIndemnizacionIRPF)}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
                     <span className="text-[12px] text-zinc-400">
-                      IRPF exceso (tramo marginal {(results.marginalIRPFRate * 100).toFixed(1).replace(".", ",")}%)
+                      IRPF (tramo marginal {(results.marginalIRPFRate * 100).toFixed(1).replace(".", ",")}%)
                     </span>
                     <span className="text-[12px] text-zinc-400 tabular-nums">−{formatCurrency(results.irpfIndemnizacion)}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[12px] text-zinc-500">Indemnización neta</span>
+                    <span className="text-[12px] font-medium text-zinc-700 tabular-nums">{formatCurrency(results.improcedenteNetoIRPF)}</span>
                   </div>
                 </div>
               )}
