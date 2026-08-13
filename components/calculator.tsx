@@ -88,8 +88,8 @@ export default function Calculator() {
   }, []);
 
   return (
-    <main className="h-screen overflow-y-auto bg-zinc-50 p-6 font-[family-name:var(--font-geist-sans),system-ui,sans-serif] select-none">
-      <div className="max-w-2xl lg:max-w-5xl mx-auto flex flex-col gap-5 pb-10">
+    <main className="h-screen overflow-y-auto bg-zinc-50 p-6 font-[family-name:var(--font-geist-sans),system-ui,sans-serif]">
+      <div className="max-w-2xl lg:max-w-4xl mx-auto flex flex-col gap-5 pb-10">
 
         <header>
           <h1 className="text-lg font-medium text-zinc-900 tracking-tight">
@@ -100,7 +100,7 @@ export default function Calculator() {
           </p>
         </header>
 
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-2">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
           <label className="bg-white rounded-xl border border-zinc-200 px-2 lg:px-3 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all overflow-hidden lg:overflow-visible">
             <span className="block text-[10px] text-zinc-400 uppercase tracking-wider mb-1">
               Salario bruto anual
@@ -139,22 +139,6 @@ export default function Calculator() {
 
           <label className="bg-white rounded-xl border border-zinc-200 px-2 lg:px-3 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all overflow-hidden lg:overflow-visible">
             <span className="block text-[10px] text-zinc-400 uppercase tracking-wider mb-1">
-              Nº de pagas
-            </span>
-            <span className="flex items-baseline gap-1">
-              <select
-                value={numPagas}
-                onChange={(e) => setNumPagas(Number(e.target.value))}
-                className="w-full text-[15px] font-medium text-zinc-900 bg-transparent outline-none border border-zinc-200 rounded-md px-2 py-1 focus:border-zinc-300 h-9 box-border"
-              >
-                <option value={12}>12</option>
-                <option value={14}>14</option>
-              </select>
-            </span>
-          </label>
-
-          <label className="bg-white rounded-xl border border-zinc-200 px-2 lg:px-3 py-3 focus-within:border-zinc-300 focus-within:shadow-sm transition-all overflow-hidden lg:overflow-visible">
-            <span className="block text-[10px] text-zinc-400 uppercase tracking-wider mb-1">
               Inicio contrato
             </span>
             <input
@@ -180,10 +164,21 @@ className="w-full min-w-0 text-xs lg:text-[15px] font-medium text-zinc-900 bg-tr
 
         {results ? (
           <>
-        <div className="grid grid-cols-3 text-center text-xs bg-white rounded-xl border border-zinc-200 divide-x divide-zinc-100 py-2.5 [&>span]:flex [&>span]:flex-col [&>span]:items-center [&>span]:justify-center [&>span]:gap-0.5">
+        <div className="grid grid-cols-2 lg:grid-cols-4 text-center text-xs bg-white rounded-xl border border-zinc-200 divide-x divide-zinc-100 py-2.5 [&>span]:flex [&>span]:flex-col [&>span]:items-center [&>span]:justify-center [&>span]:gap-0.5">
           <span className="text-zinc-500">Salario diario <strong className="text-zinc-900">{formatCurrency(results.dailySalary)}</strong></span>
           <span className="text-zinc-500">Días trabajados <strong className="text-zinc-900">{formatInt(results.daysWorked)}</strong></span>
-              <span className="text-zinc-500"><span className="lg:hidden">Meses comp.</span><span className="hidden lg:inline">Meses computables</span> <strong className="text-zinc-900">{formatInt(results.monthsWorked)}</strong></span>
+          <span className="text-zinc-500"><span className="lg:hidden">Meses comp.</span><span className="hidden lg:inline">Meses computables</span> <strong className="text-zinc-900">{formatInt(results.monthsWorked)}</strong></span>
+          <span className="text-zinc-500">
+            Nº pagas
+            <select
+              value={numPagas}
+              onChange={(e) => setNumPagas(Number(e.target.value))}
+              className="text-xs font-medium text-zinc-900 bg-transparent outline-none border border-zinc-200 rounded-md px-1.5 py-0.5 focus:border-zinc-300"
+            >
+              <option value={12}>12</option>
+              <option value={14}>14</option>
+            </select>
+          </span>
         </div>
 
             <div className="flex flex-col gap-3">
