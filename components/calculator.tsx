@@ -33,8 +33,14 @@ export default function Calculator() {
   });
   const [salaryInput, setSalaryInput] = useState("");
   const [salaryFocused, setSalaryFocused] = useState(false);
-  const [startDate, setStartDate] = useState("2025-06-02");
-  const [endDate, setEndDate] = useState(defaultEnd());
+  const [startDate, setStartDate] = useState(() => {
+    if (typeof window !== "undefined") return localStorage.getItem("inicio") || "2025-06-02";
+    return "2025-06-02";
+  });
+  const [endDate, setEndDate] = useState(() => {
+    if (typeof window !== "undefined") return localStorage.getItem("fin") || defaultEnd();
+    return defaultEnd();
+  });
   const [vacationTaken, setVacationTaken] = useState(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("vacaciones");
@@ -42,18 +48,44 @@ export default function Calculator() {
     }
     return 0;
   });
-  const [numPagas, setNumPagas] = useState(14);
-  const [vacacionesAnuales, setVacacionesAnuales] = useState(30);
-  const [cobradaVerano, setCobradaVerano] = useState(false);
-  const [cobradaNavidad, setCobradaNavidad] = useState(false);
+  const [numPagas, setNumPagas] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = parseInt(localStorage.getItem("pagas") || "", 10);
+      if (saved === 12 || saved === 14) return saved;
+    }
+    return 14;
+  });
+  const [vacacionesAnuales, setVacacionesAnuales] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = parseInt(localStorage.getItem("vacacionesAnuales") || "", 10);
+      if (!isNaN(saved)) return Math.max(0, saved);
+    }
+    return 30;
+  });
+  const [cobradaVerano, setCobradaVerano] = useState(() => {
+    if (typeof window !== "undefined") return localStorage.getItem("cobradaVerano") === "1";
+    return false;
+  });
+  const [cobradaNavidad, setCobradaNavidad] = useState(() => {
+    if (typeof window !== "undefined") return localStorage.getItem("cobradaNavidad") === "1";
+    return false;
+  });
 
   useEffect(() => {
     if (typeof window !== "undefined") localStorage.setItem("salario", annualSalary.toString());
   }, [annualSalary]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") localStorage.setItem("vacaciones", vacationTaken.toString());
-  }, [vacationTaken]);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("vacaciones", vacationTaken.toString());
+      localStorage.setItem("inicio", startDate);
+      localStorage.setItem("fin", endDate);
+      localStorage.setItem("pagas", numPagas.toString());
+      localStorage.setItem("vacacionesAnuales", vacacionesAnuales.toString());
+      localStorage.setItem("cobradaVerano", cobradaVerano ? "1" : "0");
+      localStorage.setItem("cobradaNavidad", cobradaNavidad ? "1" : "0");
+    }
+  }, [vacationTaken, startDate, endDate, numPagas, vacacionesAnuales, cobradaVerano, cobradaNavidad]);
 
   const salaryDisplay = salaryFocused
     ? salaryInput
