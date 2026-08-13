@@ -43,6 +43,8 @@ export default function Calculator() {
     return 0;
   });
   const [numPagas, setNumPagas] = useState(14);
+  const [cobradaVerano, setCobradaVerano] = useState(false);
+  const [cobradaNavidad, setCobradaNavidad] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") localStorage.setItem("salario", annualSalary.toString());
@@ -62,9 +64,11 @@ export default function Calculator() {
       new Date(startDate + "T00:00:00"),
       new Date(endDate + "T23:59:59"),
       vacationTaken,
-      numPagas
+      numPagas,
+      cobradaVerano,
+      cobradaNavidad
     ),
-    [annualSalary, startDate, endDate, vacationTaken, numPagas]
+    [annualSalary, startDate, endDate, vacationTaken, numPagas, cobradaVerano, cobradaNavidad]
   );
 
   const handleSalaryFocus = useCallback(() => {
@@ -232,10 +236,40 @@ className="w-full min-w-0 text-xs lg:text-[15px] font-medium text-zinc-900 bg-tr
                 <span className="text-[12px] font-medium text-zinc-700 tabular-nums">{formatCurrency(results.vacacionesBruto)}</span>
               </div>
               {numPagas > 12 && (
-                <div className="flex items-center justify-between">
-                  <span className="text-[12px] text-zinc-500">Pagas extra prorrateadas</span>
-                  <span className="text-[12px] font-medium text-zinc-700 tabular-nums">{formatCurrency(results.pagasExtra)}</span>
-                </div>
+                <>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[12px] text-zinc-500">Paga verano (ene–jun)</span>
+                    <span className="text-[12px] font-medium text-zinc-700 tabular-nums">{formatCurrency(results.pagaVerano)}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[12px] text-zinc-500">Paga navidad (jul–dic)</span>
+                    <span className="text-[12px] font-medium text-zinc-700 tabular-nums">{formatCurrency(results.pagaNavidad)}</span>
+                  </div>
+                  <div className="pt-1.5 flex flex-col gap-1">
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={cobradaVerano}
+                        onChange={(e) => setCobradaVerano(e.target.checked)}
+                        className="h-3.5 w-3.5 accent-zinc-600"
+                      />
+                      <span className="text-[12px] text-zinc-600">Ya cobrada la paga de verano</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={cobradaNavidad}
+                        onChange={(e) => setCobradaNavidad(e.target.checked)}
+                        className="h-3.5 w-3.5 accent-zinc-600"
+                      />
+                      <span className="text-[12px] text-zinc-600">Ya cobrada la paga de navidad</span>
+                    </label>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[12px] text-zinc-500">Pagas extra en finiquito</span>
+                    <span className="text-[12px] font-medium text-zinc-700 tabular-nums">{formatCurrency(results.pagasExtra)}</span>
+                  </div>
+                </>
               )}
               <div className="flex items-center justify-between">
                 <span className="text-[12px] text-zinc-400">

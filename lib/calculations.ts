@@ -14,6 +14,8 @@ export interface Results {
   violenciaGenero: number;
   extincionContratoTemporal: number;
   vacacionesBruto: number;
+  pagaVerano: number;
+  pagaNavidad: number;
   pagasExtra: number;
   finiquitoBruto: number;
   finiquitoIRPF: number;
@@ -56,7 +58,7 @@ function calcEffectiveIRPFRate(annualSalary: number): number {
   return Math.round((totalTax / annualSalary) * 10000) / 10000;
 }
 
-function calcPagasExtraProporcional(endDate: Date, pagaMonto: number): number {
+function calcPagasExtra(endDate: Date, pagaMonto: number): { verano: number; navidad: number } {
   const y = endDate.getFullYear();
   const jan1 = new Date(y, 0, 1);
   const jun30 = new Date(y, 5, 30);
@@ -66,14 +68,17 @@ function calcPagasExtraProporcional(endDate: Date, pagaMonto: number): number {
   const sem1 = dateDiffDays(jan1, jun30) + 1;
   const sem2 = dateDiffDays(jul1, dec31) + 1;
 
-  let proporcion = 0;
+  let verano = 0;
+  let navidad = 0;
+
   if (endDate.getTime() <= jun30.getTime()) {
-    proporcion = (dateDiffDays(jan1, endDate) + 1) / sem1;
+    verano = (dateDiffDays(jan1, endDate) + 1) / sem1;
   } else {
-    proporcion = 1 + (dateDiffDays(jul1, endDate) + 1) / sem2;
+    verano = 1;
+    navidad = (dateDiffDays(jul1, endDate) + 1) / sem2;
   }
 
-  return pagaMonto * proporcion;
+  return { verano: pagaMonto * verano, navidad: pagaMonto * navidad };
 }
 
 export function calculate(
@@ -81,7 +86,9 @@ export function calculate(
   startDate: Date,
   endDate: Date,
   vacationTaken: number,
-  numPagas: number = 14
+  numPagas: number = 14,
+  cobradaVerano: boolean = false,
+  cobradaNavidad: boolean = false
 ): Results | null {
   if (annualSalary < 0 || !startDate || !endDate) return null;
   if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return null;
@@ -104,7 +111,10 @@ export function calculate(
   const vacacionesBruto = dailySalary * vacationUnused;
 
   const pagaExtraMonto = annualSalary / numPagas;
-  const pagasExtra = numPagas > 12 ? calcPagasExtraProporcional(endDate, pagaExtraMonto) : 0;
+  const { verano, navidad } = numPagas > 12 ? calcPagasExtra(endDate, pagaExtraMonto) : { verano: 0, navidad: 0 };
+  const pagaVerano = cobradaVerano ? 0 : verano;
+  const pagaNavidad = cobradaNavidad ? 0 : navidad;
+  const pagasExtra = pagaVerano + pagaNavidad;
   const finiquitoBruto = vacacionesBruto + pagasExtra;
 
   const effectiveIRPFRate = calcEffectiveIRPFRate(annualSalary);
@@ -129,6 +139,8 @@ export function calculate(
     violenciaGenero: r(fProcedente),
     extincionContratoTemporal: r(extincionContratoTemporal),
     vacacionesBruto: r(vacacionesBruto),
+    pagaVerano: r(pagaVerano),
+    pagaNavidad: r(pagaNavidad),
     pagasExtra: r(pagasExtra),
     finiquitoBruto: r(finiquitoBruto),
     finiquitoIRPF: r(finiquitoIRPF),
